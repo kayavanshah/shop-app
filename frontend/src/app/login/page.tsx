@@ -30,8 +30,8 @@ export default function LoginPage() {
         const data = await res.json()
         setError(data.error || 'Login failed')
       }
-    } catch (err) {
-      setError('An error occurred')
+    } catch (err: any) {
+      setError(`Error: ${err.message}. URL: ${process.env.NEXT_PUBLIC_API_URL}`)
     } finally {
       setLoading(false)
     }
