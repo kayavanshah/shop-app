@@ -212,7 +212,7 @@ app.delete('/api/expenses/:id', async (req: Request, res: Response) => {
 // ----------------------------------------------------
 app.get('/api/products', async (req: Request, res: Response) => {
   try {
-    const query = req.query.q as string;
+    const query = req.query.q as any as string;
     const products = await prisma.product.findMany({
       where: query ? { name: { contains: query } } : undefined,
       orderBy: query ? { name: 'asc' } : { createdAt: 'desc' }
@@ -336,15 +336,15 @@ app.get('/api/dashboard', async (req: Request, res: Response) => {
   try {
     const today = new Date();
     today.setHours(0,0,0,0);
-    const productsCount = await prisma.product.count({ where: { isDeleted: false } });
-    const lowStockCount = await prisma.product.count({ where: { isDeleted: false, quantity: { lte: prisma.product.fields.minStock } } as any });
+    const productsCount = await prisma.product.count();
+    const lowStockCount = await prisma.product.count({ where: { quantity: { lte: prisma.product.fields.minStock } } as any });
     
     const billsToday = await prisma.bill.findMany({ where: { createdAt: { gte: today } }, include: { items: { include: { product: true } } } });
     let todaySales = 0;
     let todayBuyCost = 0;
     billsToday.forEach(b => {
       todaySales += b.totalAmount;
-      b.items.forEach(i => { todayBuyCost += (i.product.buyPrice * i.quantity); });
+      (b as any).items.forEach(i => { todayBuyCost += (i.product.buyPrice * i.quantity); });
     });
 
     const returnsToday = await prisma.returnTransaction.findMany({ where: { createdAt: { gte: today } } });
@@ -362,7 +362,7 @@ app.get('/api/dashboard', async (req: Request, res: Response) => {
 
 app.get('/api/reports/daily-closing', async (req: Request, res: Response) => {
   try {
-    const dateStr = req.query.date as string;
+    const dateStr = req.query.date as any as string;
     const start = new Date(dateStr); start.setHours(0,0,0,0);
     const end = new Date(dateStr); end.setHours(23,59,59,999);
     
@@ -374,7 +374,7 @@ app.get('/api/reports/daily-closing', async (req: Request, res: Response) => {
     bills.forEach(b => {
       if (b.paymentMethod === 'CASH') cashSales += b.totalAmount;
       else if (b.paymentMethod === 'UPI') upiSales += b.totalAmount;
-      b.items.forEach(i => totalBuyCost += (i.product.buyPrice * i.quantity));
+      (b as any).items.forEach(i => totalBuyCost += (i.product.buyPrice * i.quantity));
     });
 
     const totalReturns = returns.reduce((s, r) => s + r.amount, 0);
