@@ -7,10 +7,10 @@ import { Package, AlertTriangle, TrendingUp, RefreshCcw, DollarSign, ShoppingCar
 export default function Dashboard() {
   const [data, setData] = useState({
     totalProducts: 0,
-    lowStockCount: 0,
+    lowStockItems: 0,
     todaySales: 0,
     todayReturns: 0,
-    netSales: 0,
+    todayProfit: 0,
   })
   const [loading, setLoading] = useState(true)
 
@@ -80,7 +80,7 @@ export default function Dashboard() {
           </div>
           <div>
             <p className="text-zinc-500 text-sm font-medium">Low Stock Alerts</p>
-            <h3 className="text-2xl font-bold mt-1 text-amber-600 dark:text-amber-500">{data.lowStockCount}</h3>
+            <h3 className="text-2xl font-bold mt-1 text-amber-600 dark:text-amber-500">{data.lowStockItems}</h3>
           </div>
         </div>
 
@@ -116,9 +116,9 @@ export default function Dashboard() {
             <DollarSign className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-zinc-500 text-sm font-medium">Net Sales (Today)</p>
+            <p className="text-zinc-500 text-sm font-medium">Net Profit (Today)</p>
             <h3 className="text-2xl font-bold mt-1 text-emerald-600 dark:text-emerald-500">
-              ₹{data.netSales.toFixed(2)}
+              ₹{data.todayProfit.toFixed(2)}
             </h3>
           </div>
         </div>
