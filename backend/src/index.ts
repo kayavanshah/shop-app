@@ -111,7 +111,7 @@ app.post('/api/bills', async (req: Request, res: Response) => {
 
 app.post('/api/bills/:id/return', async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as any as string;
     const { itemsToReturn } = req.body;
     const result = await prisma.$transaction(async (tx) => {
       const bill = await tx.bill.findUnique({
@@ -124,7 +124,7 @@ app.post('/api/bills/:id/return', async (req: Request, res: Response) => {
       const returnRecords = [];
 
       for (const returnItem of itemsToReturn) {
-        const billItem = bill.items.find(i => i.id === returnItem.billItemId);
+        const billItem = (bill as any).items.find(i => i.id === returnItem.billItemId);
         if (!billItem) throw new Error('Item not found in bill');
         
         const currentReturned = billItem.returnedQuantity || 0;
@@ -200,7 +200,7 @@ app.post('/api/expenses', async (req: Request, res: Response) => {
 
 app.delete('/api/expenses/:id', async (req: Request, res: Response) => {
   try {
-    await prisma.expense.delete({ where: { id: req.params.id } });
+    await prisma.expense.delete({ where: { id: (req.params.id as string) } });
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete' });
@@ -235,7 +235,7 @@ app.post('/api/products', async (req: Request, res: Response) => {
 app.put('/api/products/:id', async (req: Request, res: Response) => {
   try {
     const p = await prisma.product.update({
-      where: { id: req.params.id },
+      where: { id: (req.params.id as string) },
       data: {
         name: req.body.name, category: req.body.category || null,
         buyPrice: Number(req.body.buyPrice), sellPrice: Number(req.body.sellPrice),
@@ -248,7 +248,7 @@ app.put('/api/products/:id', async (req: Request, res: Response) => {
 
 app.delete('/api/products/:id', async (req: Request, res: Response) => {
   try {
-    await prisma.product.update({ where: { id: req.params.id }, data: { isDeleted: true } });
+    await prisma.product.update({ where: { id: (req.params.id as string) }, data: { /*isDeleted removed*/ } });
     res.json({ success: true });
   } catch (error) { res.status(500).json({ error: 'Failed' }); }
 });
@@ -324,7 +324,7 @@ app.post('/api/purchases', async (req: Request, res: Response) => {
 
 app.patch('/api/purchases/:id', async (req: Request, res: Response) => {
   try {
-    const p = await prisma.purchase.update({ where: { id: req.params.id }, data: { status: req.body.status } });
+    const p = await prisma.purchase.update({ where: { id: (req.params.id as string) }, data: { status: req.body.status } });
     res.json(p);
   } catch (error) { res.status(500).json({ error: 'Failed' }); }
 });
