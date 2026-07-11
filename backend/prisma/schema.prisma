@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  name      String
+  category  String?
+  buyPrice  Float
+  sellPrice Float
+  quantity  Int      @default(0)
+  minStock  Int      @default(10)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  billItems BillItem[]
+  purchaseItems PurchaseItem[]
+  adjustments StockAdjustment[]
+}
+
+model Bill {
+  id            String     @id @default(cuid())
+  customerName  String?
+  totalAmount   Float
+  discount      Float      @default(0)
+  paymentMethod String     @default("CASH")
+  createdAt     DateTime   @default(now())
+  
+  items         BillItem[]
+  returns       ReturnTransaction[]
+}
+
+model BillItem {
+  id               String  @id @default(cuid())
+  billId           String
+  productId        String
+  quantity         Int
+  returnedQuantity Int     @default(0)
+  price            Float
+  subtotal         Float
+
+  bill      Bill    @relation(fields: [billId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model ReturnTransaction {
+  id        String   @id @default(cuid())
+  billId    String
+  amount    Float
+  createdAt DateTime @default(now())
+
+  bill      Bill     @relation(fields: [billId], references: [id], onDelete: Cascade)
+}
+
+model Purchase {
+  id           String         @id @default(cuid())
+  supplierName String?
+  supplierId   String?
+  totalAmount  Float
+  status       String         @default("COMPLETED")
+  createdAt    DateTime       @default(now())
+
+  supplier     Supplier?      @relation(fields: [supplierId], references: [id])
+  items        PurchaseItem[]
+}
+
+model PurchaseItem {
+  id         String   @id @default(cuid())
+  purchaseId String
+  productId  String
+  quantity   Int
+  buyPrice   Float
+  subtotal   Float
+
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id])
+}
+
+model Supplier {
+  id             String     @id @default(cuid())
+  name           String
+  mobile         String?
+  whatsapp       String?
+  address        String?
+  gstNumber      String?
+  openingBalance Float      @default(0)
+  notes          String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  purchases      Purchase[]
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  amount    Float
+  reason    String
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model StockAdjustment {
+  id        String   @id @default(cuid())
+  productId String
+  type      String   // "ADD" or "REMOVE"
+  quantity  Int
+  reason    String   // "BROKEN", "LOST", "PERSONAL_USE", "DAMAGED", "FOUND"
+  createdAt DateTime @default(now())
+
+  product   Product  @relation(fields: [productId], references: [id])
+}
