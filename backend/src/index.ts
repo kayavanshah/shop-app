@@ -27,7 +27,7 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
   if (username === 'kayavan' && password === '@Kayavan1011') {
     const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1d' });
     res.cookie('session', token, { httpOnly: true, path: '/', sameSite: 'none', secure: true });
-    res.json({ success: true });
+    res.json({ success: true, token });
   } else {
     res.status(401).json({ error: 'Invalid credentials' });
   }

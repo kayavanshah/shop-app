@@ -24,6 +24,8 @@ export default function LoginPage() {
       })
 
       if (res.ok) {
+        const data = await res.json();
+        document.cookie = `session=${data.token}; path=/; max-age=86400; secure`;
         router.push('/')
         router.refresh()
       } else {

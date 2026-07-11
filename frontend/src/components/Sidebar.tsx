@@ -50,8 +50,15 @@ export default function Sidebar() {
   }, [router])
 
   const handleLogout = async () => {
-    await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/auth/logout', { method: 'POST', credentials: 'include' })
-    window.location.href = '/login'
+    try {
+      await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/auth/logout', { method: 'POST', credentials: 'include' })
+      document.cookie = 'session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      router.push('/login')
+      router.refresh()
+    } catch (error) {
+      console.error('Logout failed', error)
+      window.location.href = '/login'
+    }
   }
 
   return (
