@@ -56,6 +56,31 @@ app.get('/api/debug/env', (req, res) => {
   });
 });
 
+app.post('/api/debug/clear-test-data', async (req, res) => {
+  try {
+    await prisma.purchaseItem.deleteMany();
+    await prisma.purchase.deleteMany();
+    await prisma.billItem.deleteMany();
+    await prisma.bill.deleteMany();
+    await prisma.inventoryLog.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.supplier.deleteMany();
+    await prisma.expense.deleteMany();
+    await prisma.stockAdjustment.deleteMany();
+    await prisma.returnTransaction.deleteMany();
+    
+    // delete user 'test_shop' and 'test_shop_3' if any
+    await prisma.user.deleteMany({
+      where: {
+        username: { startsWith: 'test' }
+      }
+    });
+    res.json({ success: true });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.post('/api/auth/register', async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
