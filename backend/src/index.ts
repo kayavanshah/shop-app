@@ -47,6 +47,15 @@ app.use('/api', (req, res, next) => {
   if (req.path.startsWith('/auth')) return next();
   return requireAuth(req, res, next);
 });
+// Debug endpoint
+app.get('/api/debug/env', (req, res) => {
+  const dbUrl = process.env.DATABASE_URL || '';
+  res.json({
+    hasPgBouncer: dbUrl.includes('pgbouncer=true'),
+    port: dbUrl.includes('6543') ? 6543 : (dbUrl.includes('5432') ? 5432 : 'unknown')
+  });
+});
+
 app.post('/api/auth/register', async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
@@ -354,11 +363,14 @@ app.get('/api/suppliers', async (req: Request, res: Response) => {
 app.post('/api/suppliers', async (req: Request, res: Response) => {
   try {
     const s = await prisma.supplier.create({ data: {
-      userId: req.userId, name: req.body.name, phone: req.body.phone, address: req.body.address,
-      gstNumber: req.body.gstNumber, openingBalance: Number(req.body.openingBalance), notes: req.body.notes
+      userId: req.userId, name: req.body.name, mobile: req.body.mobile || null, whatsapp: req.body.whatsapp || null, address: req.body.address || null,
+      gstNumber: req.body.gstNumber || null, openingBalance: Number(req.body.openingBalance) || 0, notes: req.body.notes || null
     }});
     res.json(s);
-  } catch (error) { res.status(500).json({ error: 'Failed' }); }
+  } catch (error: any) {
+    console.error('Supplier Create Error:', error);
+    res.status(500).json({ error: error.message || 'Failed' }); 
+  }
 });
 
 app.get('/api/purchases', async (req: Request, res: Response) => {
