@@ -80,14 +80,19 @@ app.post('/api/auth/register', async (req: Request, res: Response) => {
 });
 
 app.post('/api/auth/login', async (req: Request, res: Response) => {
-  const { username, password } = req.body;
-  const user = await prisma.user.findUnique({ where: { username } });
-  if (user && await bcrypt.compare(password, user.password)) {
-    const token = jwt.sign({ userId: user.id, username: user.username }, JWT_SECRET, { expiresIn: '7d' });
-    res.cookie('session', token, { httpOnly: true, path: '/', sameSite: 'none', secure: true });
-    res.json({ success: true, token });
-  } else {
-    res.status(401).json({ error: 'Invalid credentials' });
+  try {
+    const { username, password } = req.body;
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (user && await bcrypt.compare(password, user.password)) {
+      const token = jwt.sign({ userId: user.id, username: user.username }, JWT_SECRET, { expiresIn: '7d' });
+      res.cookie('session', token, { httpOnly: true, path: '/', sameSite: 'none', secure: true });
+      res.json({ success: true, token });
+    } else {
+      res.status(401).json({ error: 'Invalid credentials' });
+    }
+  } catch (err: any) {
+    console.error('Login Error:', err);
+    res.status(500).json({ error: err.message || 'Failed to login' });
   }
 });
 
