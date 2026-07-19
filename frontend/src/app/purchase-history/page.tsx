@@ -30,7 +30,7 @@ export default function PurchaseHistoryPage() {
       if (startDate && endDate) url += `startDate=${startDate}T00:00:00.000Z&endDate=${endDate}T23:59:59.999Z&`
       if (statusFilter !== 'ALL') url += `status=${statusFilter}`
       
-      const res = await fetch(url, { credentials: 'include' })
+      const res = await fetch(url, { credentials: 'include', cache: 'no-store' })
       let data: any = []
       if (res.ok) {
         try { data = await res.json() } catch(e) {}

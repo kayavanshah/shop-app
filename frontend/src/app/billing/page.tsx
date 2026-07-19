@@ -36,7 +36,7 @@ export default function BillingPage() {
 
   useEffect(() => {
     if (searchTerm.length >= 2) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?q=${encodeURIComponent(searchTerm)}`, { credentials: 'include' })
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?q=${encodeURIComponent(searchTerm)}`, { credentials: 'include', cache: 'no-store' })
         .then(async res => {
           if (!res.ok) return []
           try {

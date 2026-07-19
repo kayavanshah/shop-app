@@ -54,7 +54,7 @@ export default function InventoryPage() {
   const fetchProducts = async () => {
     setLoading(true)
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/products', { credentials: 'include' })
+      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/products', { credentials: 'include', cache: 'no-store' })
       const data = await res.json()
       setProducts(Array.isArray(data) ? data : [])
     } catch (e) {

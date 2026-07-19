@@ -55,7 +55,7 @@ export default function ReportsPage() {
       if (startDate && endDate) {
         url += `?startDate=${startDate}T00:00:00.000Z&endDate=${endDate}T23:59:59.999Z`
       }
-      const res = await fetch(url, { credentials: 'include' })
+      const res = await fetch(url, { credentials: 'include', cache: 'no-store' })
       let data = []
       if (res.ok) {
         try { data = await res.json() } catch(e) {}
