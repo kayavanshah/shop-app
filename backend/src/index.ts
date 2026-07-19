@@ -294,7 +294,10 @@ app.post('/api/products', async (req: Request, res: Response) => {
       quantity: Number(req.body.quantity), minStock: Number(req.body.minStock)
     }});
     res.json({ success: true, count: (p as any).count });
-  } catch (error) { res.status(500).json({ error: 'Failed' }); }
+  } catch (error: any) {
+    console.error('Product Create Error:', error);
+    res.status(500).json({ error: error.message || 'Failed' }); 
+  }
 });
 
 app.put('/api/products/:id', async (req: Request, res: Response) => {
@@ -376,8 +379,9 @@ app.post('/api/purchases', async (req: Request, res: Response) => {
       let total = 0;
       const itemsToCreate = [];
       for (const item of data.items) {
-        total += item.buyPrice * item.quantity;
-        itemsToCreate.push({ productId: item.productId, quantity: item.quantity, buyPrice: item.buyPrice });
+        const subtotal = item.buyPrice * item.quantity;
+        total += subtotal;
+        itemsToCreate.push({ productId: item.productId, quantity: item.quantity, buyPrice: item.buyPrice, subtotal });
         await tx.product.update({ where: { id: item.productId }, data: { quantity: { increment: item.quantity }, buyPrice: item.buyPrice }});
       }
       return await tx.purchase.create({
@@ -385,7 +389,10 @@ app.post('/api/purchases', async (req: Request, res: Response) => {
       });
     });
     res.json(result);
-  } catch (error) { res.status(500).json({ error: 'Failed' }); }
+  } catch (error: any) {
+    console.error('Purchase Error:', error);
+    res.status(500).json({ error: error.message || 'Failed' }); 
+  }
 });
 
 app.patch('/api/purchases/:id', async (req: Request, res: Response) => {
