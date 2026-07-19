@@ -17,7 +17,7 @@ export default function Register() {
     setLoading(true)
 
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/auth/register', { credentials: 'include', method: 'POST',
+      const res = await fetch('/api/auth/register', { credentials: 'include', method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },

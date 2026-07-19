@@ -15,7 +15,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(process.env.NEXT_PUBLIC_API_URL + '/api/dashboard', { credentials: 'include', cache: 'no-store' })
+    fetch('/api/dashboard', { credentials: 'include', cache: 'no-store' })
       .then(async res => {
         if (!res.ok) return {}
         try {

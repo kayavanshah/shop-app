@@ -36,7 +36,7 @@ export default function BillingPage() {
 
   useEffect(() => {
     if (searchTerm.length >= 2) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?q=${encodeURIComponent(searchTerm)}`, { credentials: 'include', cache: 'no-store' })
+      fetch(`/api/products?q=${encodeURIComponent(searchTerm)}`, { credentials: 'include', cache: 'no-store' })
         .then(async res => {
           if (!res.ok) return []
           try {
@@ -109,7 +109,7 @@ export default function BillingPage() {
     setIsSubmitting(true)
     
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/bills', { credentials: 'include', method: 'POST',
+      const res = await fetch('/api/bills', { credentials: 'include', method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customerName,

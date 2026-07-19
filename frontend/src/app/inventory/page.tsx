@@ -54,7 +54,7 @@ export default function InventoryPage() {
   const fetchProducts = async () => {
     setLoading(true)
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/products', { credentials: 'include', cache: 'no-store' })
+      const res = await fetch('/api/products', { credentials: 'include', cache: 'no-store' })
       const data = await res.json()
       setProducts(Array.isArray(data) ? data : [])
     } catch (e) {
@@ -65,7 +65,7 @@ export default function InventoryPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product?')) return
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`, { credentials: 'include', method: 'DELETE' })
+    await fetch(`/api/products/${id}`, { credentials: 'include', method: 'DELETE' })
     fetchProducts()
   }
 
@@ -98,12 +98,12 @@ export default function InventoryPage() {
     try {
       let res;
       if (editingProduct) {
-        res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${editingProduct.id}`, { credentials: 'include', method: 'PUT',
+        res = await fetch(`/api/products/${editingProduct.id}`, { credentials: 'include', method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
         })
       } else {
-        res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/products', { credentials: 'include', method: 'POST',
+        res = await fetch('/api/products', { credentials: 'include', method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
         })
@@ -127,7 +127,7 @@ export default function InventoryPage() {
     if (!adjustingProduct) return
 
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/inventory/adjust', { credentials: 'include', method: 'POST',
+      const res = await fetch('/api/inventory/adjust', { credentials: 'include', method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           productId: adjustingProduct.id,

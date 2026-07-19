@@ -69,7 +69,7 @@ export default function PurchaseHistoryPage() {
     const newStatus = currentStatus === 'COMPLETED' ? 'PENDING' : 'COMPLETED'
     
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/purchases/${purchaseId}`, { credentials: 'include', method: 'PUT',
+      const res = await fetch(`/api/purchases/${purchaseId}`, { credentials: 'include', method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
       })

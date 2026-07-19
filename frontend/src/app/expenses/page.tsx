@@ -69,7 +69,7 @@ export default function ExpensesPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/expenses', { credentials: 'include', method: 'POST',
+      const res = await fetch('/api/expenses', { credentials: 'include', method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: formData.amount,
@@ -92,7 +92,7 @@ export default function ExpensesPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this expense?')) return
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/expenses/${id}`, { credentials: 'include', method: 'DELETE' })
+      const res = await fetch(`/api/expenses/${id}`, { credentials: 'include', method: 'DELETE' })
       if (res.ok) {
         fetchExpenses()
       }

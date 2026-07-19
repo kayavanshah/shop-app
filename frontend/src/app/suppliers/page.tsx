@@ -33,7 +33,7 @@ export default function SuppliersPage() {
   const fetchSuppliers = async () => {
     setLoading(true)
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/suppliers', { credentials: 'include', cache: 'no-store' })
+      const res = await fetch('/api/suppliers', { credentials: 'include', cache: 'no-store' })
       const data = await res.json()
       if (!data.error && Array.isArray(data)) setSuppliers(data)
     } catch (e) {
@@ -45,7 +45,7 @@ export default function SuppliersPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this supplier?')) return
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers/${id}`, { credentials: 'include', method: 'DELETE' })
+    const res = await fetch(`/api/suppliers/${id}`, { credentials: 'include', method: 'DELETE' })
     const data = await res.json()
     if (data.error) {
       alert(data.error)
@@ -78,12 +78,12 @@ export default function SuppliersPage() {
     try {
       let res;
       if (editingSupplier) {
-        res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers/${editingSupplier.id}`, { credentials: 'include', method: 'PUT',
+        res = await fetch(`/api/suppliers/${editingSupplier.id}`, { credentials: 'include', method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
         })
       } else {
-        res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/suppliers', { credentials: 'include', method: 'POST',
+        res = await fetch('/api/suppliers', { credentials: 'include', method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
         })
