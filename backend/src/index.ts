@@ -64,12 +64,20 @@ app.post('/api/auth/register', async (req: Request, res: Response) => {
     
     // Check if this is the very first user
     const userCount = await prisma.user.count();
+    const isFirstUser = userCount === 0;
     
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({ data: { username, password: hashedPassword } });
+    const user = await prisma.user.create({ 
+      data: { 
+        username, 
+        password: hashedPassword,
+        isActive: isFirstUser,
+        isAdmin: isFirstUser
+      } 
+    });
     
     // If it is the first user, claim all orphaned data!
-    if (userCount === 0) {
+    if (isFirstUser) {
       await prisma.product.updateMany({ where: { userId: null }, data: { userId: user.id } });
       await prisma.bill.updateMany({ where: { userId: null }, data: { userId: user.id } });
       await prisma.purchase.updateMany({ where: { userId: null }, data: { userId: user.id } });
@@ -93,6 +101,10 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const user = await prisma.user.findUnique({ where: { username } });
     if (user && await bcrypt.compare(password, user.password)) {
+      if (!user.isActive) {
+        return res.status(403).json({ error: 'Account inactive. Please contact the administrator to activate your account.' });
+      }
+      
       const token = jwt.sign({ userId: user.id, username: user.username }, JWT_SECRET, { expiresIn: '7d' });
       res.cookie('session', token, { httpOnly: true, path: '/', sameSite: 'none', secure: true });
       res.json({ success: true, token });
