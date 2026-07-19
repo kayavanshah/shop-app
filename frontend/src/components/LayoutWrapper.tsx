@@ -7,7 +7,7 @@ import Topbar from './Topbar'
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isAuthPage = pathname?.startsWith('/login')
+  const isAuthPage = pathname?.startsWith('/login') || pathname?.startsWith('/register')
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   if (isAuthPage) {

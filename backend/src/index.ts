@@ -73,7 +73,10 @@ app.post('/api/auth/register', async (req: Request, res: Response) => {
     const token = jwt.sign({ userId: user.id, username: user.username }, JWT_SECRET, { expiresIn: '7d' });
     res.cookie('session', token, { httpOnly: true, path: '/', sameSite: 'none', secure: true });
     res.json({ success: true, token });
-  } catch (err) { res.status(500).json({ error: 'Failed to register' }); }
+  } catch (err: any) { 
+    console.error('Registration Error:', err);
+    res.status(500).json({ error: err.message || 'Failed to register' }); 
+  }
 });
 
 app.post('/api/auth/login', async (req: Request, res: Response) => {
