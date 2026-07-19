@@ -29,7 +29,7 @@ export default function DailyClosingReport() {
   const fetchReport = async () => {
     setLoading(true)
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports/daily-closing?date=${date}`)
+      const res = await fetch(`/api/reports/daily-closing?date=${date}`, { credentials: 'include', cache: 'no-store' })
       const result = await res.json()
       if (!result.error) {
         setData(result)
@@ -47,8 +47,9 @@ export default function DailyClosingReport() {
   const handleAddExpense = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/expenses', {
+      const res = await fetch('/api/expenses', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: expenseData.amount,

@@ -51,7 +51,7 @@ export default function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean; setIsO
 
   const handleLogout = async () => {
     try {
-      await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/auth/logout', { method: 'POST', credentials: 'include' })
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
       document.cookie = 'session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
       router.push('/login')
       router.refresh()
