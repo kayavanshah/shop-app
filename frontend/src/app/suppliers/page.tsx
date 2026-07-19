@@ -33,9 +33,9 @@ export default function SuppliersPage() {
   const fetchSuppliers = async () => {
     setLoading(true)
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/suppliers')
+      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/suppliers', { credentials: 'include' })
       const data = await res.json()
-      if (!data.error) setSuppliers(data)
+      if (!data.error && Array.isArray(data)) setSuppliers(data)
     } catch (e) {
       console.error(e)
     } finally {

@@ -34,13 +34,16 @@ export default function ExpensesPage() {
   const fetchExpenses = async () => {
     setLoading(true)
     try {
-      let url = 'http://localhost:5000/api/expenses?'
+      let url = '/api/expenses?'
       if (startDate && endDate) {
         url += `startDate=${startDate}T00:00:00.000Z&endDate=${endDate}T23:59:59.999Z`
       }
       const res = await fetch(url, { credentials: 'include' })
-      const data = (res.ok ? await res.json().catch(()=>({})) : {})
-      if (!data.error) setExpenses(data)
+      let data: any = []
+      if (res.ok) {
+        try { data = await res.json() } catch(e) {}
+      }
+      if (!data.error && Array.isArray(data)) setExpenses(data)
     } catch (e) {
       console.error(e)
     } finally {

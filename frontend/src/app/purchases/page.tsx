@@ -24,7 +24,7 @@ export default function PurchasesPage() {
   const searchRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    fetch(process.env.NEXT_PUBLIC_API_URL + '/api/suppliers')
+    fetch(process.env.NEXT_PUBLIC_API_URL + '/api/suppliers', { credentials: 'include' })
       .then(async res => {
       if (!res.ok) return {};
       try { return await res.json() } catch(e) { return {} }
@@ -46,7 +46,7 @@ export default function PurchasesPage() {
 
   useEffect(() => {
     if (searchTerm.length >= 2) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?q=${encodeURIComponent(searchTerm)}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?q=${encodeURIComponent(searchTerm)}`, { credentials: 'include' })
         .then(async res => {
       if (!res.ok) return {};
       try { return await res.json() } catch(e) { return {} }
