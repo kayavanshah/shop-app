@@ -18,7 +18,6 @@ export default function LoginPage() {
     try {
       const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/auth/login', { credentials: 'include', method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ username, password })
       })
 
