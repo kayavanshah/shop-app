@@ -97,8 +97,7 @@ export default function ReportsPage() {
     if (returns.length === 0) return
     
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bills/${returnModalBill.id}/return`, {
-        method: 'POST',
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bills/${returnModalBill.id}/return`, { credentials: 'include', method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ returns })
       })

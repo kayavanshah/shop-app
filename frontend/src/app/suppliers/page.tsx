@@ -45,7 +45,7 @@ export default function SuppliersPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this supplier?')) return
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers/${id}`, { method: 'DELETE' })
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers/${id}`, { credentials: 'include', method: 'DELETE' })
     const data = await res.json()
     if (data.error) {
       alert(data.error)
@@ -76,14 +76,12 @@ export default function SuppliersPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     if (editingSupplier) {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers/${editingSupplier.id}`, {
-        method: 'PUT',
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers/${editingSupplier.id}`, { credentials: 'include', method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       })
     } else {
-      await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/suppliers', {
-        method: 'POST',
+      await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/suppliers', { credentials: 'include', method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       })

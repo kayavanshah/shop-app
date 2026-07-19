@@ -65,7 +65,7 @@ export default function InventoryPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product?')) return
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`, { method: 'DELETE' })
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`, { credentials: 'include', method: 'DELETE' })
     fetchProducts()
   }
 
@@ -96,14 +96,12 @@ export default function InventoryPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     if (editingProduct) {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${editingProduct.id}`, {
-        method: 'PUT',
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${editingProduct.id}`, { credentials: 'include', method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       })
     } else {
-      await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/products', {
-        method: 'POST',
+      await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/products', { credentials: 'include', method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       })
@@ -117,8 +115,7 @@ export default function InventoryPage() {
     if (!adjustingProduct) return
 
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/inventory/adjust', {
-        method: 'POST',
+      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/inventory/adjust', { credentials: 'include', method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           productId: adjustingProduct.id,

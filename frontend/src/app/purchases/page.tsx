@@ -135,8 +135,7 @@ export default function PurchasesPage() {
     setIsSubmitting(true)
     
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/purchases', {
-        method: 'POST',
+      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/purchases', { credentials: 'include', method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           supplierId: selectedSupplierId,
