@@ -62,6 +62,7 @@ app.post('/api/debug/clear-test-data', async (req, res) => {
     await prisma.purchase.deleteMany();
     await prisma.billItem.deleteMany();
     await prisma.bill.deleteMany();
+    await prisma.inventoryLog.deleteMany();
     await prisma.product.deleteMany();
     await prisma.supplier.deleteMany();
     await prisma.expense.deleteMany();
