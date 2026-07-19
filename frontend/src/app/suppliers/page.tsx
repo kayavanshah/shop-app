@@ -75,19 +75,31 @@ export default function SuppliersPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (editingSupplier) {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers/${editingSupplier.id}`, { credentials: 'include', method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-    } else {
-      await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/suppliers', { credentials: 'include', method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
+    try {
+      let res;
+      if (editingSupplier) {
+        res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers/${editingSupplier.id}`, { credentials: 'include', method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        })
+      } else {
+        res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/suppliers', { credentials: 'include', method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        })
+      }
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert('Error saving: ' + (errorData.error || res.statusText));
+        return;
+      }
+      
+      setIsModalOpen(false)
+      fetchSuppliers()
+    } catch (err: any) {
+      alert('Network Error: ' + err.message);
     }
-    setIsModalOpen(false)
-    fetchSuppliers()
   }
 
   const filteredSuppliers = suppliers.filter(s => 

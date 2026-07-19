@@ -95,19 +95,31 @@ export default function InventoryPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (editingProduct) {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${editingProduct.id}`, { credentials: 'include', method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-    } else {
-      await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/products', { credentials: 'include', method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
+    try {
+      let res;
+      if (editingProduct) {
+        res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${editingProduct.id}`, { credentials: 'include', method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        })
+      } else {
+        res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/products', { credentials: 'include', method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        })
+      }
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert('Error saving: ' + (errorData.error || res.statusText));
+        return;
+      }
+      
+      setIsModalOpen(false)
+      fetchProducts()
+    } catch (err: any) {
+      alert('Network Error: ' + err.message);
     }
-    setIsModalOpen(false)
-    fetchProducts()
   }
 
   const handleAdjustSave = async (e: React.FormEvent) => {
