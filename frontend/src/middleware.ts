@@ -6,8 +6,8 @@ export async function middleware(request: NextRequest) {
   const session = request.cookies.get('session')?.value
   const { pathname } = request.nextUrl
   
-  if (pathname.startsWith('/login') || pathname.startsWith('/api/auth/login')) {
-      if (session && pathname.startsWith('/login')) {
+  if (pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/api/auth/')) {
+      if (session && (pathname.startsWith('/login') || pathname.startsWith('/register'))) {
          try {
              const parsed = await decrypt(session)
              if (parsed) return NextResponse.redirect(new URL('/', request.url))

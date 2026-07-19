@@ -16,6 +16,14 @@ model User {
   username  String   @unique
   password  String
   createdAt DateTime @default(now())
+
+  products         Product[]
+  bills            Bill[]
+  purchases        Purchase[]
+  suppliers        Supplier[]
+  expenses         Expense[]
+  stockAdjustments StockAdjustment[]
+  returnTransactions ReturnTransaction[]
 }
 
 model Product {
@@ -28,7 +36,9 @@ model Product {
   minStock  Int      @default(10)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String?
 
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   billItems BillItem[]
   purchaseItems PurchaseItem[]
   adjustments StockAdjustment[]
@@ -41,7 +51,9 @@ model Bill {
   discount      Float      @default(0)
   paymentMethod String     @default("CASH")
   createdAt     DateTime   @default(now())
+  userId        String?
   
+  user          User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   items         BillItem[]
   returns       ReturnTransaction[]
 }
@@ -64,7 +76,9 @@ model ReturnTransaction {
   billId    String
   amount    Float
   createdAt DateTime @default(now())
+  userId    String?
 
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   bill      Bill     @relation(fields: [billId], references: [id], onDelete: Cascade)
 }
 
@@ -75,7 +89,9 @@ model Purchase {
   totalAmount  Float
   status       String         @default("COMPLETED")
   createdAt    DateTime       @default(now())
+  userId       String?
 
+  user         User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
   supplier     Supplier?      @relation(fields: [supplierId], references: [id])
   items        PurchaseItem[]
 }
@@ -103,7 +119,9 @@ model Supplier {
   notes          String?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+  userId         String?
 
+  user           User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   purchases      Purchase[]
 }
 
@@ -113,6 +131,9 @@ model Expense {
   reason    String
   date      DateTime @default(now())
   createdAt DateTime @default(now())
+  userId    String?
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model StockAdjustment {
@@ -122,6 +143,8 @@ model StockAdjustment {
   quantity  Int
   reason    String   // "BROKEN", "LOST", "PERSONAL_USE", "DAMAGED", "FOUND"
   createdAt DateTime @default(now())
+  userId    String?
 
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id])
 }
