@@ -44,7 +44,7 @@ const requireAuth = (req: Request, res: Response, next: express.NextFunction) =>
 };
 
 app.use('/api', (req, res, next) => {
-  if (req.path.startsWith('/auth')) return next();
+  if (req.path.startsWith('/auth') || req.path.startsWith('/debug')) return next();
   return requireAuth(req, res, next);
 });
 // Debug endpoint
