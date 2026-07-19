@@ -123,6 +123,55 @@ app.post('/api/auth/logout', (req: Request, res: Response) => {
 });
 
 // ----------------------------------------------------
+// ADMIN (SUPER ADMIN ONLY)
+// ----------------------------------------------------
+app.get('/api/admin/users', async (req: Request, res: Response) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.userId } });
+    if (!user || !user.isAdmin) return res.status(403).json({ error: 'Forbidden' });
+
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        isActive: true,
+        isAdmin: true,
+        createdAt: true,
+        _count: {
+          select: { products: true, bills: true, purchases: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(users);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/admin/users/:id/toggle-status', async (req: Request, res: Response) => {
+  try {
+    const adminUser = await prisma.user.findUnique({ where: { id: req.userId } });
+    if (!adminUser || !adminUser.isAdmin) return res.status(403).json({ error: 'Forbidden' });
+
+    const { id } = req.params;
+    if (id === req.userId) return res.status(400).json({ error: 'Cannot deactivate yourself' });
+
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) return res.status(404).json({ error: 'Not found' });
+
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: { isActive: !user.isActive }
+    });
+
+    res.json({ success: true, isActive: updatedUser.isActive });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ----------------------------------------------------
 // BILLS
 // ----------------------------------------------------
 app.get('/api/bills', async (req: Request, res: Response) => {
